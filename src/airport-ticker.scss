@@ -1,0 +1,339 @@
+// Styling
+@import "bower_components/bourbon/dist/bourbon";
+
+airport-ticker {
+    display: inline-block;
+}
+
+.unit {
+    float: left;
+
+    &:last-child {
+        .flippers {
+            &:after {
+                display: none;
+            }
+        }
+    }
+
+    .unit-label {
+        text-align: left;
+        padding-left: 10px;
+        line-height: 20px;
+        text-transform: uppercase;
+        font-size: 10px;
+        color: #c2c2c2;
+        text-shadow: 1px 1px 3px #000;
+    }
+
+}
+
+.flippers {
+    &:after {
+        content: ':';
+        float: left;
+        height: 90px;
+        margin: 5px;
+        font-size: 60px;
+        line-height: 77px;
+    }
+}
+
+.flipper {
+    position: relative;
+    float: left;
+    margin: 5px;
+    width: 60px;
+    height: 90px;
+    font-size: 80px;
+    font-weight: bold;
+    line-height: 87px;
+    border-radius: 6px;
+    list-style: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .7);
+
+    li {
+        z-index: 1;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+
+        &:first-child {
+            z-index: 2;
+        }
+
+        .digit {
+            display: block;
+            height: 100%;
+            perspective: 200px;
+
+            > div {
+                z-index: 1;
+                position: absolute;
+                left: 0;
+                width: 100%;
+                height: 50%;
+                overflow: hidden;
+
+                .shadow,
+                .shadow2 {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 2;
+                }
+
+                .value {
+                    position: absolute;
+                    left: 0;
+                    z-index: 1;
+                    width: 100%;
+                    height: 200%;
+                    color: #ddd;
+                    text-shadow: 0 1px 2px #000;
+                    text-align: center;
+                    background-color: #222;
+                    border-radius: 6px;
+                }
+
+                &.top {
+                    transform-origin: 50% 100%;
+                    top: 0;
+
+                    .shadow2 {
+                        @include background-image(
+                            linear-gradient(
+                                to bottom, 
+                                rgba(0, 0, 0, 0) 0%, 
+                                rgba(0, 0, 0, 0) 60%, 
+                                rgba(0, 0, 0, .3) 80%, 
+                                rgba(0, 0, 0, .75) 100%
+                            )
+                        );
+                    }
+
+                    &:after {
+                        content: "";
+                        position: absolute;
+                        top: 44px;
+                        left: 0;
+                        z-index: 5;
+                        width: 100%;
+                        height: 3px;
+                        background-color: rgba(0, 0, 0, .4);
+                    }
+
+                    .value {
+                        top: 0;
+                    }
+
+                }
+
+                &.bottom {
+                    transform-origin: 50% 0%;
+                    bottom: 0;
+
+                    .shadow2 {
+                        @include background-image(
+                            linear-gradient(
+                                to bottom, 
+                                rgba(0, 0, 0, .75) 0%, 
+                                rgba(0, 0, 0, .3) 5%, 
+                                rgba(0, 0, 0, 0) 40%, 
+                                rgba(0, 0, 0, 0) 100%
+                            )
+                        );
+                    }
+
+                    .value {
+                        bottom: 0;
+                    }
+
+                }
+            }
+        }
+    }
+}
+
+// Keyframes and animation
+
+@keyframes asd {
+    0% {
+        z-index: 2;
+    }
+    5% {
+        z-index: 4;
+    }
+    100% {
+        z-index: 4;
+    }
+}
+
+@keyframes turn {
+    0% {
+        @include transform(rotateX(90deg));
+    }
+    100% {
+        @include transform(rotateX(0deg));
+    }
+}
+
+@keyframes turn2 {
+    0% {
+        @include transform(rotateX(0deg));
+    }
+    100% {
+        @include transform(rotateX(-90deg));
+    }
+}
+
+@keyframes show {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        // opacity: .5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes hide {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        // opacity: .5;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+airport-ticker {
+
+    .flipper.flipping {
+        li {
+            &.now {
+                z-index: 3;
+
+                .top {
+                    z-index: 2;
+                    @include animation(turn2 .45s linear both);
+
+                    .shadow {
+
+                        // @include background-image(
+                        //     linear-gradient(
+                        //         to bottom, 
+                        //         rgba(0, 0, 0, 0) 0%, 
+                        //         rgba(0, 0, 0, 0) 60%, 
+                        //         rgba(0, 0, 0, .3) 80%, 
+                        //         rgba(0, 0, 0, .75) 100%
+                        //     )
+                        // );
+
+                        @include background-image(
+                            linear-gradient(
+                                top, 
+                                rgba(0, 0, 0, .1) 0%, 
+                                rgba(0, 0, 0, 1) 100%
+                            )
+                        );
+                        
+                        @include animation(show .45s linear both);
+                    }
+
+                }
+                .bottom {
+                    .shadow {
+
+                        // @include background-image(
+                        //     linear-gradient(
+                        //         to bottom, 
+                        //         rgba(0, 0, 0, .75) 0%, 
+                        //         rgba(0, 0, 0, .3) 5%, 
+                        //         rgba(0, 0, 0, 0) 40%, 
+                        //         rgba(0, 0, 0, 0) 100%
+                        //     )
+                        // );
+
+                        @include background-image(
+                            linear-gradient(
+                                top, 
+                                rgba(0, 0, 0, 1) 0%, 
+                                rgba(0, 0, 0, .1) 100%
+                            )
+                        );
+                        
+                        @include animation(show .45s linear both);
+                    }
+                }
+
+            }
+
+            &.prev {
+                z-index: 2;
+                @include animation(asd .45s .40s linear both);
+
+                .top {
+                    .shadow {
+
+                        // @include background-image(
+                        //     linear-gradient(
+                        //         to bottom, 
+                        //         rgba(0, 0, 0, 0) 0%, 
+                        //         rgba(0, 0, 0, 0) 60%, 
+                        //         rgba(0, 0, 0, .3) 80%, 
+                        //         rgba(0, 0, 0, .75) 100%
+                        //     )
+                        // );
+
+                        @include background-image(
+                            linear-gradient(
+                                top, 
+                                rgba(0, 0, 0, .1) 0%, 
+                                rgba(0, 0, 0, 1) 100%
+                            )
+                        );
+
+                        @include animation(hide .45s .3s linear both);
+                    }
+                }
+                .bottom {
+                    z-index: 2;
+                    @include animation(turn .45s .40s linear both);
+
+                    .shadow {
+    
+                        // @include background-image(
+                        //     linear-gradient(
+                        //         to bottom, 
+                        //         rgba(0, 0, 0, .75) 0%, 
+                        //         rgba(0, 0, 0, .3) 5%, 
+                        //         rgba(0, 0, 0, 0) 40%, 
+                        //         rgba(0, 0, 0, 0) 100%
+                        //     )
+                        // );
+
+                        @include background-image(
+                            linear-gradient(
+                                top, 
+                                rgba(0, 0, 0, 1) 0%, 
+                                rgba(0, 0, 0, .1) 100%
+                            )
+                        );
+
+                        @include animation(hide .45s .3s linear both);
+                    }
+
+                }
+
+            }
+        }
+    }
+
+}

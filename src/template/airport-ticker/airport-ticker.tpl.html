@@ -1,0 +1,24 @@
+<div class="unit" ng-repeat="unit in units">
+    <!-- Left and Right digits of a unit [5, 9] = 59 seconds -->
+    <div class="flippers">
+        <ul class="flipper" ng-repeat="digit in unit.digits" ng-class="{'flipping': digit.flipping }">
+            <!-- Now and Next -->
+            <li class="now-prev" ng-repeat="v in digit.values track by $index" ng-class="{'now': $index === 0, 'prev': $index === 1}">
+                <div class="digit">
+                    <!-- Duplicate numbers on top and bottom as they flip over each other -->
+                    <div class="top">
+                        <div class="shadow"></div>
+                        <div class="shadow2"></div>
+                        <div class="value">{{v}}</div>
+                    </div>
+                    <div class="bottom">
+                        <div class="shadow"></div>
+                        <div class="shadow2"></div>
+                        <div class="value">{{v}}</div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="unit-label">{{unit.label}}</div>
+</div>
