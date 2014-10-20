@@ -72,7 +72,7 @@ module.exports = function(grunt) {
     },
 
     ngtemplates: {
-      angularSliderTabs: {
+      airportTicker: {
         options: {
           htmlmin: {
             collapseWhitespace: true,

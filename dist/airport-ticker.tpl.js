@@ -1,4 +1,4 @@
-angular.module('angularSliderTabs').run(['$templateCache', function($templateCache) {
+angular.module('airportTicker').run(['$templateCache', function($templateCache) {
   'use strict';
 
   $templateCache.put('template/airport-ticker/airport-ticker.tpl.html',
