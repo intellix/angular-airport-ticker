@@ -7,23 +7,27 @@
             return {
                 restrict: 'EA',
                 scope: {
-                    endDate: '@'
+                    endDate: '@',
+                    onTick: '&',
+                    onFinish: '&'
                 },
                 templateUrl: 'template/airport-ticker/airport-ticker.tpl.html',
                 link: function (scope, element, attrs)
                 {
+                    var nowDate = $window.moment();
                     var targetDate;
                     var tickTimeoutId, flipTimeoutId; 
 
                     function updateTime()
                     {
                         // Get 2x pieces for each unit of current time
+                        nowDate = $window.moment();
                         var durationNow = $window.moment.duration(targetDate.diff());
                         var units = {
-                            days:    ('0' + durationNow.days()).slice(-2).split(''),
-                            hours:   ('0' + durationNow.hours()).slice(-2).split(''),
-                            minutes: ('0' + durationNow.minutes()).slice(-2).split(''),
-                            seconds: ('0' + durationNow.seconds()).slice(-2).split('')
+                            days:    durationNow.days() < 0 ? [0, 0] : ('0' + durationNow.days()).slice(-2).split(''),
+                            hours:   durationNow.hours() < 0 ? [0, 0] : ('0' + durationNow.hours()).slice(-2).split(''),
+                            minutes: durationNow.minutes() < 0 ? [0, 0] : ('0' + durationNow.minutes()).slice(-2).split(''),
+                            seconds: durationNow.seconds() < 0 ? [0, 0] : ('0' + durationNow.seconds()).slice(-2).split('')
                         };
 
                         angular.forEach(units, function(unit, unitKey) {
@@ -51,13 +55,28 @@
                         });
                     }
 
-                    function tick()
+                    var tick = function()
                     {
                         updateTime();
-                        tickTimeoutId = $timeout(function() {
-                            tick();
-                        }, 1 * 1000);
-                    }
+
+                        if (nowDate.isBefore(targetDate)) {
+
+                            if (scope.onTick) {
+                                scope.onTick();
+                            }
+
+                            tickTimeoutId = $timeout(function () {
+                                tick();
+                            }, 1 * 1000);
+
+                        } else {
+
+                            if (scope.onFinish) {
+                                scope.onFinish();
+                            }
+
+                        }
+                    };
 
                     function setup()
                     {
