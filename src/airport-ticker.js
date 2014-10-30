@@ -3,7 +3,7 @@
 
     angular.module('airportTicker', [])
 
-        .directive('airportTicker', ['$window', '$timeout', function ($window, $timeout) {
+        .directive('airportTicker', function ($window, $timeout) {
             return {
                 restrict: 'EA',
                 scope: {
@@ -134,6 +134,6 @@
 
                 }
             };
-        }]);
+        });
 
 }());
