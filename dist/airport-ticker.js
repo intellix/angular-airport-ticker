@@ -48,7 +48,7 @@
                                     flipTimeoutId = $timeout(function() {
                                         digit.flipping = false;
                                         values.shift();
-                                    }, 995);
+                                    }, 1000);
                                 }
 
                             });
