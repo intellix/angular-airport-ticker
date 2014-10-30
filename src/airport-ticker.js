@@ -3,10 +3,11 @@
 
     angular.module('airportTicker', [])
 
-        .directive('airportTicker', function ($window, $timeout) {
+        .directive('airportTicker', ['$window', '$timeout', function ($window, $timeout) {
             return {
                 restrict: 'EA',
                 scope: {
+                    format: '@',
                     endDate: '@',
                     onTick: '&',
                     onFinish: '&'
@@ -16,19 +17,29 @@
                 {
                     var nowDate = $window.moment();
                     var targetDate;
-                    var tickTimeoutId, flipTimeoutId; 
+                    var tickTimeoutId, flipTimeoutId;
+                    var format = scope.format || 'dmhs';
 
                     function updateTime()
                     {
                         // Get 2x pieces for each unit of current time
                         nowDate = $window.moment();
                         var durationNow = $window.moment.duration(targetDate.diff());
-                        var units = {
-                            days:    durationNow.days() < 0 ? [0, 0] : ('0' + durationNow.days()).slice(-2).split(''),
-                            hours:   durationNow.hours() < 0 ? [0, 0] : ('0' + durationNow.hours()).slice(-2).split(''),
-                            minutes: durationNow.minutes() < 0 ? [0, 0] : ('0' + durationNow.minutes()).slice(-2).split(''),
-                            seconds: durationNow.seconds() < 0 ? [0, 0] : ('0' + durationNow.seconds()).slice(-2).split('')
-                        };
+
+                        var units = {};
+
+                        if (angular.isDefined(scope.units.days)) {
+                            units.days = durationNow.days() < 0 ? [0, 0] : ('0' + durationNow.days()).slice(-2).split('');
+                        }
+                        if (angular.isDefined(scope.units.hours)) {
+                            units.hours = durationNow.hours() < 0 ? [0, 0] : ('0' + durationNow.hours()).slice(-2).split('');
+                        }
+                        if (angular.isDefined(scope.units.minutes)) {
+                            units.minutes = durationNow.minutes() < 0 ? [0, 0] : ('0' + durationNow.minutes()).slice(-2).split('');
+                        }
+                        if (angular.isDefined(scope.units.seconds)) {
+                            units.seconds = durationNow.seconds() < 0 ? [0, 0] : ('0' + durationNow.seconds()).slice(-2).split('');
+                        }
 
                         angular.forEach(units, function(unit, unitKey) {
                             angular.forEach(unit, function(unitPiece, pieceKey) {
@@ -42,13 +53,13 @@
                                 }
 
                                 // We only ever need 2
-                                if (values.length > 2 || unitPiece !== values[0]) {
+                                if (values.length > 1 || unitPiece !== values[0]) {
                                     digit.flipping = true;
                                     // After flipping, remove last number
                                     flipTimeoutId = $timeout(function() {
                                         digit.flipping = false;
                                         values.shift();
-                                    }, 995);
+                                    }, 1000);
                                 }
 
                             });
@@ -80,48 +91,34 @@
 
                     function setup()
                     {
-                        scope.units = {
-                            days: {
-                                label: 'Days',
-                                digits: [{
-                                    flipping: false,
-                                    values: []
-                                }, {
-                                    flipping: false,
-                                    values: []
-                                }]
-                            },
-                            hours: {
-                                label: 'Hours', 
-                                digits: [{
-                                    flipping: false,
-                                    values: []
-                                }, {
-                                    flipping: false,
-                                    values: []
-                                }]
-                            },
-                            minutes: {
-                                label: 'Minutes',
-                                digits: [{
-                                    flipping: false,
-                                    values: []
-                                }, {
-                                    flipping: false,
-                                    values: []
-                                }]
-                            },
-                            seconds: {
-                                label: 'Seconds',
-                                digits: [{
-                                    flipping: false,
-                                    values: []
-                                }, {
-                                    flipping: false,
-                                    values: []
-                                }]
-                            }
+                        var unit = {
+                            label: '',
+                            digits: [{
+                                flipping: false,
+                                values: []
+                            }, {
+                                flipping: false,
+                                values: []
+                            }]
                         };
+                        scope.units = {};
+
+                        if (format.indexOf('d') !== -1) {
+                            scope.units.days = angular.copy(unit);
+                            scope.units.days.label = 'Days';
+                        }
+                        if (format.indexOf('h') !== -1) {
+                            scope.units.hours = angular.copy(unit);
+                            scope.units.hours.label = 'Hours';
+                        }
+                        if (format.indexOf('m') !== -1) {
+                            scope.units.minutes = angular.copy(unit);
+                            scope.units.minutes.label = 'Minutes';
+                        }
+                        if (format.indexOf('s') !== -1) {
+                            scope.units.seconds = angular.copy(unit);
+                            scope.units.seconds.label = 'Seconds';
+                        }
 
                         // Clear any previous timeouts
                         $timeout.cancel(tickTimeoutId);
@@ -137,6 +134,6 @@
 
                 }
             };
-        });
+        }]);
 
 }());
